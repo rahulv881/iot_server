@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "iotdb",
-    "host": "127.0.0.1",
+    "username": "sql6475729",
+    "password": "hlvb8ZWUV9",
+    "database": "sql6475729",
+    "host": "sql6.freemysqlhosting.net",
     "dialect": "mysql"
   },
   "test": {
@@ -15,9 +15,9 @@
   },
   "production": {
     "username": "sql6475729",
-    "password": null,
+    "password": "hlvb8ZWUV9",
     "database": "sql6475729",
-    "host": " sql6.freemysqlhosting.net",
+    "host": "sql6.freemysqlhosting.net",
     "dialect": "mysql"
   }
 }

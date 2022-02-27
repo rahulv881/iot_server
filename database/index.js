@@ -1,12 +1,13 @@
 const mysql = require('mysql2');
 const Sequelize = require("sequelize");
+const dbConfig = require("../config/config.json")[process.env.NODE_ENV || "development"];
 
 // Create the connection pool. The pool-specific settings are the defaults
 const pool = mysql.createPool({
-  host: '127.0.0.1',
-  user: 'root',
-  password: "",
-  database: 'iotdb',
+  host: "sql6.freemysqlhosting.net",
+  user: 'sql6475729',
+  password: "hlvb8ZWUV9",
+  database: 'sql6475729',
   port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
@@ -20,8 +21,6 @@ pool.query(`select * from Devices`,(err,res,fields) => {
 
   console.log(res);
 })
-
-const dbConfig = require("../config/config.json")[process.env.NODE_ENV || "development"];
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
   host: dbConfig.host,
