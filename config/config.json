@@ -14,10 +14,10 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
+    "username": "sql6475729",
     "password": null,
-    "database": "iotdb_production",
-    "host": "127.0.0.1",
+    "database": "sql6475729",
+    "host": " sql6.freemysqlhosting.net",
     "dialect": "mysql"
   }
 }
