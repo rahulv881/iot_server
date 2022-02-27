@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Device extends Model {
     /**
@@ -16,29 +17,32 @@ module.exports = (sequelize, DataTypes) => {
   Device.init({
     vid: DataTypes.STRING,
     datavia: DataTypes.STRING,
-    latitude: DataTypes.FLOAT,
-    longitude: DataTypes.FLOAT,
-    cell1: DataTypes.FLOAT,
-    cell2: DataTypes.FLOAT,
-    cell3: DataTypes.FLOAT,
-    cell4: DataTypes.FLOAT,
-    cell5: DataTypes.FLOAT,
-    cell6: DataTypes.FLOAT,
-    cell7: DataTypes.FLOAT,
-    cell8: DataTypes.FLOAT,
-    cell9: DataTypes.FLOAT,
-    cell10: DataTypes.FLOAT,
-    cell11: DataTypes.FLOAT,
-    cell12: DataTypes.FLOAT,
-    cell13: DataTypes.FLOAT,
-    cell14: DataTypes.FLOAT,
-    avgcellvoltage: DataTypes.FLOAT,
-    packvoltage: DataTypes.FLOAT,
-    current: DataTypes.FLOAT,
-    batterypercent: DataTypes.INTEGER
+    latitude: DataTypes.STRING,
+    longitude: DataTypes.STRING,
+    imei: DataTypes.STRING,
+    cell1: DataTypes.STRING,
+    cell2: DataTypes.STRING,
+    cell3: DataTypes.STRING,
+    cell4: DataTypes.STRING,
+    cell5: DataTypes.STRING,
+    cell6: DataTypes.STRING,
+    cell7: DataTypes.STRING,
+    cell8: DataTypes.STRING,
+    cell9: DataTypes.STRING,
+    cell10: DataTypes.STRING,
+    cell11: DataTypes.STRING,
+    cell12: DataTypes.STRING,
+    cell13: DataTypes.STRING,
+    cell14: DataTypes.STRING,
+    avgcellvoltage: DataTypes.STRING,
+    packvoltage: DataTypes.STRING,
+    current: DataTypes.STRING,
+    batterypercent: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Device',
   });
+
+
   return Device;
 };

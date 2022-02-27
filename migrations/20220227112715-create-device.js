@@ -15,71 +15,74 @@ module.exports = {
       datavia: {
         type: Sequelize.STRING
       },
+      imei: {
+        type: Sequelize.STRING,
+      },
       latitude: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       longitude: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell1: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell2: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell3: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell4: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell5: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell6: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell7: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell8: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell9: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell10: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell11: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell12: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell13: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       cell14: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       avgcellvoltage: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       packvoltage: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       current: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       batterypercent: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updated_at: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }
