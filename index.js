@@ -1,26 +1,35 @@
 var app = require( 'express' )();
 var http = require( 'http' ).createServer( app );
 var io = require( 'socket.io' )( http );
+const logger = require('logger').createLogger('logfile.log'); 
 const {sequelize} = require('./database/index');
 const { DataTypes } = require('@sequelize/core');
+const device = require('./models/device');
 const Device = require( './models/device')(sequelize,DataTypes);
 
 
 const PORT = process.env.PORT || 3000;
 
+// * Root route.
 app.get( '/', function( req, res ) {
-res.sendFile( __dirname + '/public/index.html' );
+    res.sendFile( __dirname + '/public/index.html' );
 });
 
 http.listen( PORT, function() {
-console.log( 'listening on *:' + PORT );
+    console.log( 'listening on *:' + PORT );
+    logger.info( 'listening on *:' + PORT );
 });
 
 io.on( 'connection', ( socket ) => {
     console.log( "An IoT device has connected!" );
-
+    logger.info("An IoT device has connected!");
     socket.on('deviceInfoUpdate',(data) => {
+        console.log("Recieved update from device.");
+        logger.log("Recieved update from device.");
         try{
+
+            console.log("Parsing IoT device info...");
+            logger.info("Parsing IoT device info...");
             const [
             imei,
             latitude,
@@ -44,6 +53,8 @@ io.on( 'connection', ( socket ) => {
             current,
             batterypercent,...others] = data.tdata.split(',');
             
+            console.log("Parsed IoT device info.");
+            logger.info("Parsed IoT device info.");
             const deviceInfo = {
                 vid: data.vid,
                 datavia: data.datavia,
@@ -70,26 +81,29 @@ io.on( 'connection', ( socket ) => {
                 batterypercent:batterypercent
             };
 
-            // TODO logger here.
-            // console.log("deviceInfo = ",deviceInfo);
-            // console.log("keys = ",Object.keys(deviceInfo).length);
-            // console.log("Sequelize Model: ", sequelize.models);
+            const info = JSON.stringify(deviceInfo);
+            console.log("******** INFO *******");
+            console.log(info);
+            logger.info("******* INFO *******");
+            logger.info(info);
 
+            console.log("Storing the IoT device IMEI: + ",imei," in database...");
+            logger.info("Storing the IoT device IMEI: + ",imei," in database...");
             Device.create(deviceInfo).then((res) => {
-                // TODO log device inserted (with device Id).
-                console.log("Inserted device info in database.");
+                console.log("Successfully: Stored the IoT device IMEI: + ",imei," in database.");x 
+                logger.info("Successfully: Stored the IoT device IMEI: + ",imei," in database.");
             }).catch((e) =>  {
-                
-                // TODO log device inserted (with device Id).
                 console.log(e);
+                logger.fatal(e);
             });
         }catch(e){
-            // TODO log error
-            console.log("Catch error:", e);
+            console.log(e);
+            logger.fatal(e);
         }
     })
     
     socket.on( 'disconnect', () => {
         console.log("An IoT Device has disconnected");
+        logger.info("An IoT Device has disconnected");
     });
 });
