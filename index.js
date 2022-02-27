@@ -90,7 +90,7 @@ io.on( 'connection', ( socket ) => {
             console.log("Storing the IoT device IMEI: + ",imei," in database...");
             logger.info("Storing the IoT device IMEI: + ",imei," in database...");
             Device.create(deviceInfo).then((res) => {
-                console.log("Successfully: Stored the IoT device IMEI: + ",imei," in database.");x 
+                console.log("Successfully: Stored the IoT device IMEI: + ",imei," in database.");
                 logger.info("Successfully: Stored the IoT device IMEI: + ",imei," in database.");
             }).catch((e) =>  {
                 console.log(e);
