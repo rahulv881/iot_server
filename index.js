@@ -6,7 +6,7 @@ const { DataTypes } = require('@sequelize/core');
 const Device = require( './models/device')(sequelize,DataTypes);
 
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.get( '/', function( req, res ) {
 res.sendFile( __dirname + '/public/index.html' );
