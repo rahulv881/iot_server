@@ -10,7 +10,6 @@ module.exports = {
       },
       vid: {
         type: Sequelize.STRING,
-        unique: true
       },
       datavia: {
         type: Sequelize.STRING
