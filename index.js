@@ -132,6 +132,7 @@ io.on( 'connection', ( socket ) => {
 
             // * SELECT fields FROM table ORDER BY id DESC LIMIT 1;
             console.log("Fetching device imei: ",deviceId," info from database");
+            logger.info("Fetching device imei: ",deviceId," info from database");
 
             // * Send the latest info.
             const sendLatestInfoToWebPage = (deviceId,socket) => {
@@ -146,11 +147,16 @@ io.on( 'connection', ( socket ) => {
                     limit: 1,
                     }).then((res) => {
                         try{
-                            console.log("res",res);
+                            // console.log("res",res);
+                            console.log("Sending device latest info...");
+                            logger.info("Sending device latest info...");
                             socket.emit('DEVICE_LATEST_INFO',res);
                         }
                         catch(e){
+                            console.log("Error sending data to webpage");
                             console.log(e);
+                            logger.fatal("Error sending data to webpage");
+                            logger.fatal(e);
                         }
                     });
             }
@@ -159,7 +165,8 @@ io.on( 'connection', ( socket ) => {
         });
 
     }catch(e){
-        console.log("Error : ",e);
+        console.log("Error: ",e);
+        logger.info("Error: ",e);
     }
 
     socket.on( 'disconnect', () => {
