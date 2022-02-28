@@ -4,6 +4,7 @@
   "description": "IoT server for handling IoT device updates",
   "main": "index.js",
   "scripts": {
+    "preinstall": "npm install pm2 -g",
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "migrate": "npx sequelize-cli db:migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
