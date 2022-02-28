@@ -1,10 +1,19 @@
 var app = require( 'express' )();
 var http = require( 'http' ).createServer( app );
-var io = require( 'socket.io' )( http );
+var io = require( 'socket.io' )( http ,{
+    cors: {
+        origin: "*",
+        // TODO: restrict the origin policy to IoT device and webpage.
+        // origins: ["domaina.com","domainb.com"],
+        methods: ["GET", "POST"],
+    }
+});
+
 const logger = require('logger').createLogger('logfile.log'); 
 const {sequelize} = require('./database/index');
 const { DataTypes } = require('@sequelize/core');
 const device = require('./models/device');
+const { default: Constants } = require('./constants');
 const Device = require( './models/device')(sequelize,DataTypes);
 
 
@@ -21,13 +30,13 @@ http.listen( PORT, function() {
 });
 
 io.on( 'connection', ( socket ) => {
-    console.log( "An IoT device has connected!" );
-    logger.info("An IoT device has connected!");
+    // * IoT Device info listeners.
     socket.on('deviceInfoUpdate',(data) => {
-        console.log("Recieved update from device.");
-        logger.log("Recieved update from device.");
-        try{
+        socket.join('DEVICES'); // * Set of IoT devices. 
+        console.log( "An IoT device has connected!");
+        logger.info("An IoT device has connected!");
 
+        try{
             console.log("Parsing IoT device info...");
             logger.info("Parsing IoT device info...");
             const [
@@ -52,7 +61,7 @@ io.on( 'connection', ( socket ) => {
             packvoltage,
             current,
             batterypercent,...others] = data.tdata.split(',');
-            
+
             console.log("Parsed IoT device info.");
             logger.info("Parsed IoT device info.");
             const deviceInfo = {
@@ -81,29 +90,110 @@ io.on( 'connection', ( socket ) => {
                 batterypercent:batterypercent
             };
 
-            const info = JSON.stringify(deviceInfo);
-            console.log("******** INFO *******");
-            console.log(info);
-            logger.info("******* INFO *******");
-            logger.info(info);
+            // const info = JSON.stringify(deviceInfo);
+            // console.log("******** INFO *******");
+            // console.log(info);
+            // logger.info("******* INFO *******");
+            // logger.info(info);
 
-            console.log("Storing the IoT device IMEI: + ",imei," in database...");
-            logger.info("Storing the IoT device IMEI: + ",imei," in database...");
+            console.log("Storing the IoT device IMEI: + ",imei," info in database...");
+            logger.info("Storing the IoT device IMEI: + ",imei," info in database...");
+
+            // * Update particular imei device info in database.
             Device.create(deviceInfo).then((res) => {
-                console.log("Successfully: Stored the IoT device IMEI: + ",imei," in database.");
-                logger.info("Successfully: Stored the IoT device IMEI: + ",imei," in database.");
+                console.log("Successfully: Stored the IoT device IMEI: ",imei," info  in database.");
+                logger.info("Successfully: Stored the IoT device IMEI: ",imei," info in database.");
             }).catch((e) =>  {
-                console.log(e);
-                logger.fatal(e);
+                console.log("Error: ",e);
+                logger.fatal("Error: ",e);
             });
+
+            // TODO  Send Notification if required.
+            // 1. Check if particular device is connected 
+
+            
         }catch(e){
-            console.log(e);
-            logger.fatal(e);
+            console.log("Error: ",e);
+            logger.fatal("Error: ",e);
         }
     })
-    
+
+    // * Web User event listerners.
+    try{
+        var userId;
+        var interval;
+        socket.on('FROM_WEB_USER',() => {
+            console.log('A web user connected.');
+            logger.info('A web user connected.');
+        });
+
+        socket.on('GET_DEVICE_LATEST_INFO_EVENT',(deviceId) => {
+            socket.join('USERS'); // * Set of webpage users.
+
+            // * SELECT fields FROM table ORDER BY id DESC LIMIT 1;
+            console.log("Fetching device imei: ",deviceId," info from database");
+
+            // * Send the latest info.
+            const sendLatestInfoToWebPage = (deviceId,socket) => {
+                Device.findOne({
+                    raw:true,
+                    order: [
+                        ['imei', 'DESC'],
+                    ],
+                    where: {
+                        imei: deviceId
+                    },
+                    limit: 1,
+                    }).then((res) => {
+                        try{
+                            console.log("res",res);
+                            socket.emit('DEVICE_LATEST_INFO',res);
+                        }
+                        catch(e){
+                            console.log(e);
+                        }
+                    });
+            }
+
+            interval = setInterval(sendLatestInfoToWebPage,10000,deviceId,socket);
+        });
+
+    }catch(e){
+        console.log("Error : ",e);
+    }
+
     socket.on( 'disconnect', () => {
-        console.log("An IoT Device has disconnected");
-        logger.info("An IoT Device has disconnected");
+        var deleted = false;
+        const userSet = io.sockets.adapter.rooms.get("USERS");
+        const clientSet = io.sockets.adapter.rooms.get("DEVICES");
+        const users = userSet ? Array.from(userSet) : [];
+        const clients = clientSet ? Array.from(clientSet) : [];
+        var index = users.indexOf(socket.id);
+        if(interval!=null){
+            // TODO: also clear interval when the client server is down.
+            clearInterval(interval);
+        }
+        else{
+            console.log("Webpage socket interval found null.");
+            logger.fatal("Webpage socket interval found null.");
+        }
+        if(index!=-1){
+            socket.leave("USERS");
+            console.log('A web user disconnected!');
+            logger.info('A web user disconnected!');
+            deleted = true;
+        }
+        index = clients.indexOf(socket.id);
+        if(index!=-1){
+            socket.leave("DEVICES");
+            console.log("An IoT Device has disconnected");
+            logger.info("An IoT Device has disconnected");
+            deleted = true;
+        }
+
+        if(!deleted){
+            console.log("Socket disconnected but was not present in room.");
+            logger.info("Socket disconnected but was not present in room.");
+        }
     });
 });

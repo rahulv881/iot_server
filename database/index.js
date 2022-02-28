@@ -14,13 +14,14 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-pool.query(`select * from Devices`,(err,res,fields) => {
-  if(err){
-    console.log(err);
-  }
+// * Used for testing connectivity to DB.
+// pool.query(`select * from Devices`,(err,res,fields) => {
+//   if(err){s
+//     console.log(err);
+//   }
 
-  console.log(res);
-})
+//   console.log(res);
+// })
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
   host: dbConfig.host,
